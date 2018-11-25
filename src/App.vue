@@ -391,6 +391,9 @@ export default {
 </template>
 
 <style lang="scss">
+
+@import "~bootstrap/scss/bootstrap";
+
 $font-family-base: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $font-weight-base: 300;
 $font-size: 1.125em;
