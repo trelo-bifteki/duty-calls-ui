@@ -28,362 +28,358 @@ export default {
       return this.dateContext.get("date");
     },
 
-        firstDayOfMonth: function() {
-            let firstDay = moment(this.dateContext).subtract(this.currentDate,"days");
-            return firstDay.weekday();
-        },
-
-        previousMonth: function() {
-            return moment(this.dateContext).subtract(1, "month");
-        },
-        previousMonthAsString: function() {
-            return this.previousMonth.format("MMMM");
-        },
-        nextMonth: function() {
-            return moment(this.dateContext).add(1, "month");
-        },
-        nextMonthAsString: function() {
-            return this.nextMonth.format("MMMM");
-        },
-
-        daysInPreviousMonth: function() {
-            return this.previousMonth.daysInMonth();
-        },
-        daysFromPreviousMonth: function() {
-            let daysList = [];
-            let count = this.daysInPreviousMonth - this.firstDayOfMonth;
-            while (count < this.daysInPreviousMonth) {
-                count++;
-                daysList[count] = count;
-            }
-
-            return daysList.filter(function() {
-                return true;
-            });
-        },
-
-        dateList: function() {
-            let $this = this;
-
-            let dateList = [];
-
-            let previousMonth = this.previousMonth;
-            let nextMonth = this.nextMonth;
-
-            //dates for display
-            let formattedCurrentMonth = this.dateContext.format("MM");
-            let formattedCurrentYear = this.year;
-            let formattedPreviousMonth = previousMonth.format("MM");
-            let formattedPreviousYear = previousMonth.format("Y");
-            let formattedNextMonth = nextMonth.format("MM");
-            let formattedNextYear = nextMonth.format("Y");
-
-            //counters
-            let countDayInCurrentMonth = 0;
-            let countDayInPreviousMonth = 0;
-
-            //filling in dates from the previous month
-            this.daysFromPreviousMonth.forEach(function(dayFromPreviousMonth) {
-                countDayInCurrentMonth++;
-                countDayInPreviousMonth++;
-
-                let formattedDay = $this.formattingDay(dayFromPreviousMonth);
-                let previousMonth =
-                    $this.daysFromPreviousMonth.length ===
-                    countDayInPreviousMonth
-                        ? $this.previousMonthAsString
-                        : false;
-                let previousYear =
-                    formattedCurrentYear !== formattedPreviousYear &&
-                    $this.daysFromPreviousMonth.length ===
-                        countDayInPreviousMonth
-                        ? formattedPreviousYear
-                        : false;
-                let additional = {
-                    month: previousMonth,
-                    year: previousYear
-                };
-
-                if (!previousMonth && !previousYear) {
-                    additional = false;
-                }
-
-                dateList[countDayInCurrentMonth] = {
-                    key: countDayInCurrentMonth,
-                    dayNumber: formattedDay,
-                    date:
-                        formattedDay +
-                        "." +
-                        formattedPreviousMonth +
-                        "." +
-                        formattedPreviousYear,
-                    blank: true,
-                    today: false,
-                    additional: additional,
-                    weekDay: false,
-                    moment: moment(
-                        formattedPreviousYear +
-                            formattedPreviousMonth +
-                            formattedDay
-                    )
-                };
-            });
-
-            //filling in dates from the current month
-            while (countDayInCurrentMonth < this.firstDayOfMonth + this.daysInMonth) {
-                countDayInCurrentMonth++;
-
-                let day = countDayInCurrentMonth - countDayInPreviousMonth;
-                let weekDay = this.getWeekDay(countDayInCurrentMonth);
-                let formattedDay = this.formattingDay(day);
-
-                dateList[countDayInCurrentMonth] = {
-                    key: countDayInCurrentMonth,
-                    dayNumber: formattedDay,
-                    date:
-                        formattedDay +
-                        "." +
-                        formattedCurrentMonth +
-                        "." +
-                        formattedCurrentYear,
-                    blank: false,
-                    today:
-                        formattedDay === this.initialDate &&
-                        this.todayInCurrentMonthAndYear,
-                    additional: false,
-                    weekDay: weekDay,
-                    moment: moment(
-                        formattedCurrentYear +
-                            formattedCurrentMonth +
-                            formattedDay
-                    )
-                };
-            }
-
-            let daysInNextMonth = 7 - (countDayInCurrentMonth % 7);
-            let countDayInCurrentMonthSaved = countDayInCurrentMonth;
-            let day = 0;
-
-            //filling in dates from the next month
-            if (daysInNextMonth < 7) {
-                while (
-                    countDayInCurrentMonth <
-                    countDayInCurrentMonthSaved + daysInNextMonth
-                ) {
-                    countDayInCurrentMonth++;
-                    day++;
-
-                    let formattedDay = this.formattingDay(day);
-                    let nextMonth = day === 1 ? this.nextMonthAsString : false;
-                    let nextYear =
-                        formattedCurrentYear !== formattedNextYear && day === 1
-                            ? formattedNextYear
-                            : false;
-                    let additional = {
-                        month: nextMonth,
-                        year: nextYear
-                    };
-
-                    if (!nextMonth && !nextYear) {
-                        additional = false;
-                    }
-
-                    dateList[countDayInCurrentMonth] = {
-                        key: countDayInCurrentMonth,
-                        dayNumber: formattedDay,
-                        date:
-                            formattedDay +
-                            "." +
-                            formattedNextMonth +
-                            "." +
-                            formattedNextYear,
-                        blank: true,
-                        today: false,
-                        additional: additional,
-                        weekDay: false,
-                        moment: moment(
-                            formattedNextYear +
-                                formattedNextMonth +
-                                formattedDay
-                        )
-                    };
-                }
-            }
-
-            return dateList.filter(function() {
-                return true;
-            });
-        },
-
-        initialDate: function() {
-            return this.formattingDay(this.today.get("date"));
-        },
-        initialMonth: function() {
-            return this.today.format("MMMM");
-        },
-        initialYear: function() {
-            return this.today.format("Y");
-        },
-        todayInCurrentMonthAndYear: function() {
-            return (
-                this.month === this.initialMonth &&
-                this.year === this.initialYear
-            );
-        },
-        selectedDayAndMonth: function() {
-            let dayAndMonth = this.selectedDate.format("D MMMM");
-            dayAndMonth = dayAndMonth.split(" ");
-            dayAndMonth = {
-                day: dayAndMonth[0],
-                month: dayAndMonth[1]
-            };
-
-            return dayAndMonth;
-        },
-        selectedWeekDay: function() {
-            return this.selectedDate.format("dddd");
-        },
-        todayIsEqualSelectDate: function() {
-            return (
-                this.selectedDate.format("YYYYMMDD") ===
-                this.today.format("YYYYMMDD")
-            );
-        }
+    firstDayOfMonth: function() {
+      let firstDay = moment(this.dateContext).subtract(this.currentDate, "days");
+      return firstDay.weekday();
     },
-    methods: {
-        addMonth: function() {
-            this.dateContext = this.nextMonth;
-        },
-        subtractMonth: function() {
-            this.dateContext = this.previousMonth;
-        },
-        setSelectedDate: function(moment) {
-            this.selectedDate = moment;
-        },
-        goToday: function() {
-            this.selectedDate = this.today;
-            this.dateContext = this.today;
-        },
-        formattingDay(day) {
-            return ("0" + day).slice(-2);
-        },
-        getWeekDay(day) {
-            let index = day;
-            if (index > 7) {
-                index %= 7;
-            }
-            index = index === 0 ? 6 : index - 1;
-            return this.days[index];
-        }
+
+    previousMonth: function() {
+      return moment(this.dateContext).subtract(1, "month");
     },
-    filters: {
-        capitalize: function(value) {
-            if (!value) return "";
-            value = value.toString();
-            return value.charAt(0).toUpperCase() + value.slice(1);
+
+    previousMonthAsString: function() {
+      return this.previousMonth.format("MMMM");
+    },
+    nextMonth: function() {
+      return moment(this.dateContext).add(1, "month");
+    },
+    nextMonthAsString: function() {
+      return this.nextMonth.format("MMMM");
+    },
+
+    daysInPreviousMonth: function() {
+      return this.previousMonth.daysInMonth();
+    },
+    daysFromPreviousMonth: function() {
+      let daysList = [];
+      let count = this.daysInPreviousMonth - this.firstDayOfMonth;
+      while (count < this.daysInPreviousMonth) {
+        count++;
+        daysList[count] = count;
+      }
+
+      return daysList.filter(function() {
+        return true;
+      });
+    },
+
+    dateList: function() {
+      let $this = this;
+
+      let dateList = [];
+
+      let previousMonth = this.previousMonth;
+      let nextMonth = this.nextMonth;
+
+      //dates for display
+      let formattedCurrentMonth = this.dateContext.format("MM");
+      let formattedCurrentYear = this.year;
+      let formattedPreviousMonth = previousMonth.format("MM");
+      let formattedPreviousYear = previousMonth.format("Y");
+      let formattedNextMonth = nextMonth.format("MM");
+      let formattedNextYear = nextMonth.format("Y");
+
+      //counters
+      let countDayInCurrentMonth = 0;
+      let countDayInPreviousMonth = 0;
+
+      //filling in dates from the previous month
+      this.daysFromPreviousMonth.forEach(function(dayFromPreviousMonth) {
+        countDayInCurrentMonth++;
+        countDayInPreviousMonth++;
+
+        let formattedDay = $this.formattingDay(dayFromPreviousMonth);
+        let previousMonth =
+          $this.daysFromPreviousMonth.length ===
+          countDayInPreviousMonth ?
+          $this.previousMonthAsString :
+          false;
+        let previousYear =
+          formattedCurrentYear !== formattedPreviousYear &&
+          $this.daysFromPreviousMonth.length ===
+          countDayInPreviousMonth ?
+          formattedPreviousYear :
+          false;
+        let additional = {
+          month: previousMonth,
+          year: previousYear
+        };
+
+        if (!previousMonth && !previousYear) {
+          additional = false;
         }
+
+        dateList[countDayInCurrentMonth] = {
+          key: countDayInCurrentMonth,
+          dayNumber: formattedDay,
+          date: formattedDay +
+            "." +
+            formattedPreviousMonth +
+            "." +
+            formattedPreviousYear,
+          blank: true,
+          today: false,
+          additional: additional,
+          weekDay: false,
+          moment: moment(
+            formattedPreviousYear +
+            formattedPreviousMonth +
+            formattedDay
+          )
+        };
+      });
+
+      //filling in dates from the current month
+      while (countDayInCurrentMonth < this.firstDayOfMonth + this.daysInMonth) {
+        countDayInCurrentMonth++;
+
+        let day = countDayInCurrentMonth - countDayInPreviousMonth;
+        let weekDay = this.getWeekDay(countDayInCurrentMonth);
+        let formattedDay = this.formattingDay(day);
+
+        dateList[countDayInCurrentMonth] = {
+          key: countDayInCurrentMonth,
+          dayNumber: formattedDay,
+          date: formattedDay +
+            "." +
+            formattedCurrentMonth +
+            "." +
+            formattedCurrentYear,
+          blank: false,
+          today: formattedDay === this.initialDate &&
+            this.todayInCurrentMonthAndYear,
+          additional: false,
+          weekDay: weekDay,
+          moment: moment(
+            formattedCurrentYear +
+            formattedCurrentMonth +
+            formattedDay
+          )
+        };
+      }
+
+      let daysInNextMonth = 7 - (countDayInCurrentMonth % 7);
+      let countDayInCurrentMonthSaved = countDayInCurrentMonth;
+      let day = 0;
+
+      //filling in dates from the next month
+      if (daysInNextMonth < 7) {
+        while (
+          countDayInCurrentMonth <
+          countDayInCurrentMonthSaved + daysInNextMonth
+        ) {
+          countDayInCurrentMonth++;
+          day++;
+
+          let formattedDay = this.formattingDay(day);
+          let nextMonth = day === 1 ? this.nextMonthAsString : false;
+          let nextYear =
+            formattedCurrentYear !== formattedNextYear && day === 1 ?
+            formattedNextYear :
+            false;
+          let additional = {
+            month: nextMonth,
+            year: nextYear
+          };
+
+          if (!nextMonth && !nextYear) {
+            additional = false;
+          }
+
+          dateList[countDayInCurrentMonth] = {
+            key: countDayInCurrentMonth,
+            dayNumber: formattedDay,
+            date: formattedDay +
+              "." +
+              formattedNextMonth +
+              "." +
+              formattedNextYear,
+            blank: true,
+            today: false,
+            additional: additional,
+            weekDay: false,
+            moment: moment(
+              formattedNextYear +
+              formattedNextMonth +
+              formattedDay
+            )
+          };
+        }
+      }
+
+      return dateList.filter(function() {
+        return true;
+      });
+    },
+
+    initialDate: function() {
+      return this.formattingDay(this.today.get("date"));
+    },
+    initialMonth: function() {
+      return this.today.format("MMMM");
+    },
+    initialYear: function() {
+      return this.today.format("Y");
+    },
+    todayInCurrentMonthAndYear: function() {
+      return (
+        this.month === this.initialMonth &&
+        this.year === this.initialYear
+      );
+    },
+    selectedDayAndMonth: function() {
+      let dayAndMonth = this.selectedDate.format("D MMMM");
+      dayAndMonth = dayAndMonth.split(" ");
+      dayAndMonth = {
+        day: dayAndMonth[0],
+        month: dayAndMonth[1]
+      };
+
+      return dayAndMonth;
+    },
+    selectedWeekDay: function() {
+      return this.selectedDate.format("dddd");
+    },
+    todayIsEqualSelectDate: function() {
+      return (
+        this.selectedDate.format("YYYYMMDD") ===
+        this.today.format("YYYYMMDD")
+      );
     }
+  },
+  methods: {
+    addMonth: function() {
+      this.dateContext = this.nextMonth;
+    },
+    subtractMonth: function() {
+      this.dateContext = this.previousMonth;
+    },
+    setSelectedDate: function(moment) {
+      this.selectedDate = moment;
+    },
+    goToday: function() {
+      this.selectedDate = this.today;
+      this.dateContext = this.today;
+    },
+    formattingDay(day) {
+      return ("0" + day).slice(-2);
+    },
+    getWeekDay(day) {
+      let index = day;
+      if (index > 7) {
+        index %= 7;
+      }
+      index = index === 0 ? 6 : index - 1;
+      return this.days[index];
+    }
+  },
+  filters: {
+    capitalize: function(value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+  }
 }
 </script>
 
 <template>
-  <div id="app">
-    <b-container>
-      <div class="b-calendar">
-        <b-row>
-          <b-col md="4">
-            <div class="b-calendar__information">
-              <div class="today d-flex justify-content-center align-items-center">
-                <div class="weekDay">
-                  {{selectedWeekDay | capitalize}}
-                </div>
-                <div class="day">
-                  {{selectedDayAndMonth.day}}
-                </div>
-                                  <div class="month">
-                                      {{selectedDayAndMonth.month | capitalize}}
-                                  </div>
-                                  <a href="#" id="goTodayLink" @click="goToday" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
-                                      Today
-                                  </a>
-                                  <b-tooltip target="goTodayLink" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
-                                      Back to today
-                                  </b-tooltip>
-                              </div>
-                          </div>
-                      </b-col>
-                      <b-col md="8">
-                          <div class="b-calendar__calendar">
-                              <div class="b-calendar__header">
-                                  <b-row>
-                                      <b-col class="year text-right" align-h="end">
-                                          <span>{{year}}</span>
-                                      </b-col>
-                                  </b-row>
-                                  <b-row align-v="center">
-                                      <b-col class="text-left" align-h="start">
-                                          <b-button id="subtractMonthBtn" class="arrow arrow-left" variant="light" @click="subtractMonth">
-                                              <i class="fa fa-fw fa-chevron-left"></i>
-                                          </b-button>
-                                          <b-tooltip target="subtractMonthBtn">
-                                              {{previousMonthAsString | capitalize}}
-                                          </b-tooltip>
-                                      </b-col>
-                                      <b-col class="text-center" align-h="center">
-                                          <span class="month">{{month}}</span>
-                                      </b-col>
-                                      <b-col class="text-right d-flex flex-row-reverse" align-h="end">
-                                          <b-button id="addMonthBtn" class="arrow arrow-right" variant="light" @click="addMonth">
-                                              <i class="fa fa-fw fa-chevron-right"></i>
-                                          </b-button>
-                                          <b-tooltip target="addMonthBtn">
-                                              {{nextMonthAsString | capitalize}}
-                                          </b-tooltip>
-                                      </b-col>
-                                  </b-row>
-                              </div>
-                              <div class="b-calendar__weekdays">
-                                  <div class="weekday" v-for="(day, index) in days" :key="index">
-                                      <strong>{{day}}</strong>
-                                  </div>
-                              </div>
-                              <div class="b-calendar__dates">
-                                  <div class="date text-right" :class="{
+<div id="app">
+  <b-container>
+    <div class="b-calendar">
+      <b-row>
+        <b-col md="4">
+          <div class="b-calendar__information">
+            <div class="today d-flex justify-content-center align-items-center">
+              <div class="weekDay">
+                {{selectedWeekDay | capitalize}}
+              </div>
+              <div class="day">
+                {{selectedDayAndMonth.day}}
+              </div>
+              <div class="month">
+                {{selectedDayAndMonth.month | capitalize}}
+              </div>
+              <a href="#" id="goTodayLink" @click="goToday" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
+                Today
+              </a>
+              <b-tooltip target="goTodayLink" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
+                Back to today
+              </b-tooltip>
+            </div>
+          </div>
+        </b-col>
+        <b-col md="8">
+          <div class="b-calendar__calendar">
+            <div class="b-calendar__header">
+              <b-row>
+                <b-col class="year text-right" align-h="end">
+                  <span>{{year}}</span>
+                </b-col>
+              </b-row>
+              <b-row align-v="center">
+                <b-col class="text-left" align-h="start">
+                  <b-button id="subtractMonthBtn" class="arrow arrow-left" variant="light" @click="subtractMonth">
+                    <i class="fa fa-fw fa-chevron-left"></i>
+                  </b-button>
+                  <b-tooltip target="subtractMonthBtn">
+                    {{previousMonthAsString | capitalize}}
+                  </b-tooltip>
+                </b-col>
+                <b-col class="text-center" align-h="center">
+                  <span class="month">{{month}}</span>
+                </b-col>
+                <b-col class="text-right d-flex flex-row-reverse" align-h="end">
+                  <b-button id="addMonthBtn" class="arrow arrow-right" variant="light" @click="addMonth">
+                    <i class="fa fa-fw fa-chevron-right"></i>
+                  </b-button>
+                  <b-tooltip target="addMonthBtn">
+                    {{nextMonthAsString | capitalize}}
+                  </b-tooltip>
+                </b-col>
+              </b-row>
+            </div>
+            <div class="b-calendar__weekdays">
+              <div class="weekday" v-for="(day, index) in days" :key="index">
+                <strong>{{day}}</strong>
+              </div>
+            </div>
+            <div class="b-calendar__dates">
+              <div class="date text-right" :class="{
                                   'today': date.today,
                                   'blank': date.blank,
                                   'no-border-right': date.key % 7 === 0,
                                }"
-                                      v-for="date in dateList" :key="date.key" :data-date="date.date" @click="setSelectedDate(date.moment)">
-                                      <span class="day">{{date.dayNumber}}</span>
-                                      <span class="weekday">{{date.weekDay}}</span>
-                                      <div class="additional" v-show="date.additional">
-                                          <span class="year" v-show="date.additional.year">{{date.additional.year}}</span>
-                                          <span class="month" v-show="date.additional.month">{{date.additional.month}}</span>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </b-col>
-                  </b-row>
+                v-for="date in dateList" :key="date.key" :data-date="date.date" @click="setSelectedDate(date.moment)">
+                <span class="day">{{date.dayNumber}}</span>
+                <span class="weekday">{{date.weekDay}}</span>
+                <div class="additional" v-show="date.additional">
+                  <span class="year" v-show="date.additional.year">{{date.additional.year}}</span>
+                  <span class="month" v-show="date.additional.month">{{date.additional.month}}</span>
+                </div>
               </div>
-          </b-container>
-      </div>
+            </div>
+          </div>
+        </b-col>
+      </b-row>
+    </div>
+  </b-container>
+</div>
 </template>
 
 <style lang="scss">
-$font-family-base: "HelveticaNeue-Light", "Helvetica Neue Light",
-    "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$font-family-base: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 $font-weight-base: 300;
 $font-size: 1.125em;
 $line-height: 1.3;
 
 body {
-    font-family: $font-family-base;
-    font-weight: $font-weight-base;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: $font-size;
-    line-height: $line-height;
+  font-family: $font-family-base;
+  font-weight: $font-weight-base;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: $font-size;
+  line-height: $line-height;
 }
 
 .b-calendar {
@@ -400,25 +396,25 @@ body {
       flex-direction: column;
       padding-top: 3em;
 
-      .weekDay {
-        font-size: 1.2em;
-        font-weight: 100;
-        padding-bottom: 0.5em;
-      }
-
-      .day {
-        font-size: 5.5em;
-        font-weight: 600;
-        line-height: 1;
-      }
-
-      .month {
-                font-size: 2em;
-                font-weight: 200;
-                line-height: 1;
-            }
-        }
+    .weekDay {
+      font-size: 1.2em;
+      font-weight: 100;
+      padding-bottom: 0.5em;
     }
+
+    .day {
+      font-size: 5.5em;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .month {
+      font-size: 2em;
+      font-weight: 200;
+      line-height: 1;
+    }
+  }
+}
     &__calendar {
         min-height: 40rem;
     }
@@ -550,5 +546,4 @@ body {
         }
     }
 }
-
 </style>
