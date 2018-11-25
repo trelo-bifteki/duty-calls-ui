@@ -1,8 +1,14 @@
 <script>
 import moment from 'moment';
+import ArrowLeft from './ArrowLeft.vue';
+import ArrowRight from './ArrowRight.vue';
 
 export default {
   name: 'App',
+  components: {
+    ArrowLeft,
+    ArrowRight,
+  },
   data() {
     return {
       today: moment(),
@@ -334,7 +340,7 @@ export default {
                     variant="light"
                     @click="subtractMonth"
                   >
-                    <i class="fa fa-fw fa-chevron-left"></i>
+                    <ArrowLeft />
                   </div>
                   <div class="tooltip" target="subtractMonthBtn">
                     {{previousMonthAsString | capitalize}}
@@ -351,7 +357,7 @@ export default {
                   align-h="end"
                 >
                   <div id="addMonthBtn" class="btn arrow arrow-right" variant="light" @click="addMonth">
-                    <i class="fa fa-fw fa-chevron-right"></i>
+                    <ArrowRight />
                   </div>
                   <div
                     class="tooltip"
