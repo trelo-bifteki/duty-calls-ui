@@ -2,7 +2,7 @@
 import moment from 'moment';
 
 export default {
-  el: "#app",
+  name: 'App',
   data() {
     return {
       today: moment(),
@@ -285,10 +285,10 @@ export default {
 
 <template>
 <div id="app">
-  <b-container>
+  <div class="container">
     <div class="b-calendar">
-      <b-row>
-        <b-col md="4">
+      <div class="row">
+        <div class="col-md-4">
           <div class="b-calendar__information">
             <div class="today d-flex justify-content-center align-items-center">
               <div class="weekDay">
@@ -300,44 +300,67 @@ export default {
               <div class="month">
                 {{selectedDayAndMonth.month | capitalize}}
               </div>
-              <a href="#" id="goTodayLink" @click="goToday" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
+              <a
+                href="#"
+                id="goTodayLink"
+                @click="goToday"
+                v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate"
+              >
                 Today
               </a>
-              <b-tooltip target="goTodayLink" v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate">
+              <div
+                class="tooltip"
+                target="goTodayLink"
+                v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate"
+              >
                 Back to today
-              </b-tooltip>
+              </div>
             </div>
           </div>
-        </b-col>
-        <b-col md="8">
+        </div>
+        <div class="col-md-8">
           <div class="b-calendar__calendar">
             <div class="b-calendar__header">
-              <b-row>
-                <b-col class="year text-right" align-h="end">
+              <div class="row">
+                <div class="col year text-right">
                   <span>{{year}}</span>
-                </b-col>
-              </b-row>
-              <b-row align-v="center">
-                <b-col class="text-left" align-h="start">
-                  <b-button id="subtractMonthBtn" class="arrow arrow-left" variant="light" @click="subtractMonth">
+                </div>
+              </div>
+              <div class="row text-center">
+                <div class="col text-left">
+                  <div
+                    id="subtractMonthBtn"
+                    class="button arrow arrow-left"
+                    variant="light"
+                    @click="subtractMonth"
+                  >
                     <i class="fa fa-fw fa-chevron-left"></i>
-                  </b-button>
-                  <b-tooltip target="subtractMonthBtn">
+                  </div>
+                  <div class="tooltip" target="subtractMonthBtn">
                     {{previousMonthAsString | capitalize}}
-                  </b-tooltip>
-                </b-col>
-                <b-col class="text-center" align-h="center">
-                  <span class="month">{{month}}</span>
-                </b-col>
-                <b-col class="text-right d-flex flex-row-reverse" align-h="end">
-                  <b-button id="addMonthBtn" class="arrow arrow-right" variant="light" @click="addMonth">
+                  </div>
+                </div>
+                <div
+                  class="col text-center"
+                  align-h="center"
+                >
+                  <span class="month">{{ month }}</span>
+                </div>
+                <div
+                  class="col text-right d-flex flex-row-reverse"
+                  align-h="end"
+                >
+                  <div id="addMonthBtn" class="btn arrow arrow-right" variant="light" @click="addMonth">
                     <i class="fa fa-fw fa-chevron-right"></i>
-                  </b-button>
-                  <b-tooltip target="addMonthBtn">
+                  </div>
+                  <div
+                    class="tooltip"
+                    target="addMonthBtn"
+                  >
                     {{nextMonthAsString | capitalize}}
-                  </b-tooltip>
-                </b-col>
-              </b-row>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="b-calendar__weekdays">
               <div class="weekday" v-for="(day, index) in days" :key="index">
@@ -360,10 +383,10 @@ export default {
               </div>
             </div>
           </div>
-        </b-col>
-      </b-row>
+        </div>
+      </div>
     </div>
-  </b-container>
+  </div>
 </div>
 </template>
 
