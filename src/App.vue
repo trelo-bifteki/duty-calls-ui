@@ -2,12 +2,14 @@
 import moment from 'moment';
 import ArrowLeft from './ArrowLeft.vue';
 import ArrowRight from './ArrowRight.vue';
+import CalendarSidebar from './CalendarSidebar';
 
 export default {
   name: 'App',
   components: {
     ArrowLeft,
     ArrowRight,
+    CalendarSidebar,
   },
   data() {
     return {
@@ -227,31 +229,6 @@ export default {
     initialYear: function() {
       return this.today.format("Y");
     },
-    todayInCurrentMonthAndYear: function() {
-      return (
-        this.month === this.initialMonth &&
-        this.year === this.initialYear
-      );
-    },
-    selectedDayAndMonth: function() {
-      let dayAndMonth = this.selectedDate.format("D MMMM");
-      dayAndMonth = dayAndMonth.split(" ");
-      dayAndMonth = {
-        day: dayAndMonth[0],
-        month: dayAndMonth[1]
-      };
-
-      return dayAndMonth;
-    },
-    selectedWeekDay: function() {
-      return this.selectedDate.format("dddd");
-    },
-    todayIsEqualSelectDate: function() {
-      return (
-        this.selectedDate.format("YYYYMMDD") ===
-        this.today.format("YYYYMMDD")
-      );
-    }
   },
   methods: {
     addMonth: function() {
@@ -296,32 +273,11 @@ export default {
       <div class="row">
         <div class="col-md-4">
           <div class="b-calendar__information">
-            <div class="today d-flex justify-content-center align-items-center">
-              <div class="weekDay">
-                {{selectedWeekDay | capitalize}}
-              </div>
-              <div class="day">
-                {{selectedDayAndMonth.day}}
-              </div>
-              <div class="month">
-                {{selectedDayAndMonth.month | capitalize}}
-              </div>
-              <a
-                href="#"
-                id="goTodayLink"
-                @click="goToday"
-                v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate"
-              >
-                Today
-              </a>
-              <div
-                class="tooltip"
-                target="goTodayLink"
-                v-show="!todayInCurrentMonthAndYear || !todayIsEqualSelectDate"
-              >
-                Back to today
-              </div>
-            </div>
+            <CalendarSidebar
+              :selectedDate="selectedDate"
+              :today="today"
+              @onTodayClicked="goToday"
+              ></CalendarSidebar>
           </div>
         </div>
         <div class="col-md-8">
