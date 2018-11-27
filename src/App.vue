@@ -272,13 +272,11 @@ export default {
     <div class="b-calendar">
       <div class="row">
         <div class="col-md-4">
-          <div class="b-calendar__information">
-            <CalendarSidebar
-              :selectedDate="selectedDate"
-              :today="today"
-              @onTodayClicked="goToday"
-              ></CalendarSidebar>
-          </div>
+          <CalendarSidebar
+            :selectedDate="selectedDate"
+            :today="today"
+            @onTodayClicked="goToday"
+          ></CalendarSidebar>
         </div>
         <div class="col-md-8">
           <div class="b-calendar__calendar">
@@ -375,34 +373,6 @@ body {
   align-items: center;
   margin: 2.5em 0;
 
-  &__information {
-    background-color: rgba(0, 123, 255, 0.2);
-    border-radius: 1.2rem 0 0 1.2rem;
-    height: 100%;
-
-    .today {
-      flex-direction: column;
-      padding-top: 3em;
-
-    .weekDay {
-      font-size: 1.2em;
-      font-weight: 100;
-      padding-bottom: 0.5em;
-    }
-
-    .day {
-      font-size: 5.5em;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    .month {
-      font-size: 2em;
-      font-weight: 200;
-      line-height: 1;
-    }
-  }
-}
     &__calendar {
         min-height: 40rem;
     }
@@ -495,18 +465,6 @@ body {
                     font-size: 0.75em;
                 }
             }
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .b-calendar__information {
-        min-height: auto;
-        padding-top: 2rem;
-        padding-bottom: 2rem;
-        border-radius: 2.5rem 2.5rem 0 0;
-        .today {
-            padding-top: 0;
         }
     }
 }

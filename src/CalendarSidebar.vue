@@ -49,15 +49,15 @@ export default {
 
 </script>
 <template>
-  <div class="b-calendar__information">
-    <div class="today d-flex justify-content-center align-items-center">
-      <div class="weekDay">
+  <div class="calendar-sidebar">
+    <div class="calendar-sidebar__today d-flex justify-content-center align-items-center">
+      <div class="calendar-sidebar__weekDay">
         {{selectedWeekDay | capitalize}}
       </div>
-      <div class="day">
+      <div class="calendar-sidebar__day">
         {{selectedDayAndMonth.day}}
       </div>
-      <div class="month">
+      <div class="calendar-sidebar__month">
         {{selectedDayAndMonth.month | capitalize}}
       </div>
       <a
@@ -78,3 +78,48 @@ export default {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+@import "~bootstrap/scss/bootstrap";
+
+.calendar-sidebar {
+  background-color: rgba(0, 123, 255, 0.2);
+  border-radius: 1.2rem 0 0 1.2rem;
+  height: 100%;
+
+  &__today {
+    flex-direction: column;
+    padding-top: 3em;
+  }
+
+  &__weekDay {
+    font-size: 1.2em;
+    font-weight: 100;
+    padding-bottom: 0.5em;
+  }
+
+  &__day {
+    font-size: 5.5em;
+    font-weight: 600;
+    line-height: 1;
+
+    @include media-breakpoint-down(md) {
+      padding-top: 0;
+    }
+  }
+
+  &__month {
+    font-size: 2em;
+    font-weight: 200;
+    line-height: 1;
+  }
+
+  @include media-breakpoint-down(md) {
+    min-height: auto;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    border-radius: 2.5rem 2.5rem 0 0;
+  }
+}
+
+</style>
