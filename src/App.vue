@@ -1,14 +1,12 @@
 <script>
 import moment from 'moment';
-import ArrowLeft from './ArrowLeft.vue';
-import ArrowRight from './ArrowRight.vue';
+import CalendarHeader from './CalendarHeader';
 import CalendarSidebar from './CalendarSidebar';
 
 export default {
   name: 'App',
   components: {
-    ArrowLeft,
-    ArrowRight,
+    CalendarHeader,
     CalendarSidebar,
   },
   data() {
@@ -280,48 +278,14 @@ export default {
         </div>
         <div class="col-md-8">
           <div class="b-calendar__calendar">
-            <div class="b-calendar__header">
-              <div class="row">
-                <div class="col year text-right">
-                  <span>{{year}}</span>
-                </div>
-              </div>
-              <div class="row text-center">
-                <div class="col text-left">
-                  <div
-                    id="subtractMonthBtn"
-                    class="button arrow arrow-left"
-                    variant="light"
-                    @click="subtractMonth"
-                  >
-                    <ArrowLeft />
-                  </div>
-                  <div class="tooltip" target="subtractMonthBtn">
-                    {{previousMonthAsString | capitalize}}
-                  </div>
-                </div>
-                <div
-                  class="col text-center"
-                  align-h="center"
-                >
-                  <span class="month">{{ month }}</span>
-                </div>
-                <div
-                  class="col text-right d-flex flex-row-reverse"
-                  align-h="end"
-                >
-                  <div id="addMonthBtn" class="btn arrow arrow-right" variant="light" @click="addMonth">
-                    <ArrowRight />
-                  </div>
-                  <div
-                    class="tooltip"
-                    target="addMonthBtn"
-                  >
-                    {{nextMonthAsString | capitalize}}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <calendarHeader
+              :month="month"
+              :year="year"
+              :previousMonthAsString="previousMonthAsString"
+              :nextMonthAsString="nextMonthAsString"
+              @previousMonthClicked="subtractMonth"
+              @nextMonthClicked="addMonth"
+            ></calendarHeader>
             <div class="b-calendar__weekdays">
               <div class="weekday" v-for="(day, index) in days" :key="index">
                 <strong>{{day}}</strong>
@@ -376,43 +340,7 @@ body {
     &__calendar {
         min-height: 40rem;
     }
-    &__header {
-        margin-bottom: 2rem;
-        .month {
-            font-size: 1.25em;
-            font-weight: 200;
-            text-transform: capitalize;
-        }
-        .year {
-            font-size: 1.5em;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        .arrow {
-            background: transparent;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 2.5rem;
-            width: 2.5rem;
-            &:hover {
-                cursor: pointer;
-            }
-            &-left {
-                i {
-                    transform: translateX(-10%);
-                }
-            }
-            &-right {
-                i {
-                    transform: translateX(10%);
-                }
-            }
-        }
-    }
+
     &__weekdays {
         display: flex;
         margin-bottom: 1.25rem;
