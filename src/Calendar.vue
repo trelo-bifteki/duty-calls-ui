@@ -287,17 +287,27 @@ export default {
               @nextMonthClicked="addMonth"
             ></calendarHeader>
             <div class="b-calendar__weekdays">
-              <div class="weekday" v-for="(day, index) in days" :key="index">
+              <div
+                class="weekday"
+                v-for="(day, index) in days"
+                :key="index"
+              >
                 <strong>{{day}}</strong>
               </div>
             </div>
             <div class="b-calendar__dates">
-              <div class="date text-right" :class="{
-                                  'today': date.today,
-                                  'blank': date.blank,
-                                  'no-border-right': date.key % 7 === 0,
-                               }"
-                v-for="date in dateList" :key="date.key" :data-date="date.date" @click="setSelectedDate(date.moment)">
+              <div
+                class="date text-right"
+                :class="{
+                  'today': date.today,
+                  'blank': date.blank,
+                  'no-border-right': date.key % 7 === 0,
+                }"
+                v-for="date in dateList"
+                :key="date.key"
+                :data-date="date.date"
+                @click="setSelectedDate(date.moment)"
+              >
                 <span class="day">{{date.dayNumber}}</span>
                 <span class="weekday">{{date.weekDay}}</span>
                 <div class="additional" v-show="date.additional">
