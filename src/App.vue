@@ -24,8 +24,11 @@ export default {
     removeParticipant(index) {
       this.participants.splice(index, 1);
     },
-    createPlan() {
+    createPlan(event) {
+      event.preventDefault(); // prevent POST request from form
       this.counter = 0;
+      console.log('This is a test');
+      return true;
     },
   }
 };
@@ -36,7 +39,7 @@ export default {
     <h1>Dienstplanner</h1>
     <form
       id="create-plan"
-      @submit="createPlan()"
+      @submit="createPlan"
     >
       <h2>Create your plan</h2>
       <fieldset>
