@@ -27,7 +27,6 @@ export default {
     createPlan(event) {
       event.preventDefault(); // prevent POST request from form
       this.counter = 0;
-      console.log('This is a test');
       return true;
     },
   }
