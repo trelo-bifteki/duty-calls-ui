@@ -1,6 +1,4 @@
-const publicPath = process.env.NODE_ENV === 'production'
-      ? '/duty-calls-ui/'
-      : '/';
+const publicPath = '/';
 
 module.exports = {
   publicPath,
