@@ -16,8 +16,8 @@ export default {
     addParticipant() {
       this.participants.push({
         id: this.counter,
-        fullname: 'test',
-        emailAddress: 'test@test.com',
+        fullname: '',
+        emailAddress: '',
       });
       this.counter++;
     },
@@ -95,6 +95,7 @@ export default {
             v-model="participant.emailAddress"
             type="email"
             aria-describedby="participantEmailAddress"
+            placeholder="Enter Email"
            />
         </div>
       </fieldset>
